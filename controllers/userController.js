@@ -1,5 +1,6 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const createUser = async (req, res) => {
     try{
@@ -33,19 +34,37 @@ const loginUser = async (req, res) => {
         }
 
         if (same) {
-            res.status(200).send('You are logged in successfully');
+            const token = createToken(user._id);
+            res.cookie('jwt', token, {
+                httpOnly: true,
+                maxAge: 1000*60*60*24,
+            });
+
+            res.redirect("/users/dashboard");        
         } else {
             res.status(401).json({
                 succeded: false,
-                error: "There are not matched",
+                error: "Passwords are not matched",
         });
         }    
-    } catch (error) {
+    }catch (error) {
         res.status(500).json({
             succeded: false,
-            error,
+            error: 'olmadi tekrar dene',
         })
     }     
 };
 
-export { createUser, loginUser };
+const createToken = (userId) => { 
+    return jwt.sign({ userId }, process.env.JWT_SECRET, {
+        expiresIn: '1d',
+    });
+};
+
+const getDashboardPage = (req, res) => {
+    res.render("dashboard", {
+        link:'dashboard',
+    })
+}
+
+export { createUser, loginUser, getDashboardPage };
