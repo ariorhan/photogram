@@ -1,19 +1,30 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Photo from "../models/photoModel.js";
 
 const createUser = async (req, res) => {
     try{
         const user = await User.create(req.body)
-        res.status(201).json({
-            succeded: true,
-            user,
-    });
+        res.status(201).json({user: user._id})
     } catch (error) {
-        res.status(500).json({
-            succeded: false,
-            error,
-        })
+
+        let errors2 ={};
+
+        if (error.code === 11000) {
+            errors2.email = "The email address is already registered"
+        }
+
+        if (error.name === 'ValidationError') {
+            Object.keys(error.errors).forEach((key) => {
+                errors2[key] = error.errors[key].message;
+            });
+        }
+
+        console.log('ERRORS:', errors2);
+
+        res.status(400).json(errors2)
+
     }     
 };
 
@@ -61,9 +72,11 @@ const createToken = (userId) => {
     });
 };
 
-const getDashboardPage = (req, res) => {
+const getDashboardPage = async (req, res) => {
+    const photos = await Photo.find({user:res.locals.user._id})
     res.render("dashboard", {
         link:'dashboard',
+        photos,
     })
 }
 
