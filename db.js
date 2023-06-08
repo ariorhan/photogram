@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const conn = () => {
-    mongoose.connect(process.env.DB_URI, {
+    mongoose.connect(process.env.DB_URL, {
         dbName: "photogram",
         useNewUrlParser: true,
         useUnifiedTopology: true,
