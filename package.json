@@ -5,7 +5,8 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "build": "react-scripts build"
   },
   "author": "Orhan ARI",
   "license": "ISC",
@@ -20,7 +21,9 @@
     "jsonwebtoken": "^9.0.0",
     "method-override": "^3.0.0",
     "mongoose": "^7.1.0",
+    "netlify-lambda": "^2.0.16",
     "nodemailer": "^6.9.3",
+    "serverless-http": "^3.2.0",
     "validator": "^13.9.0"
   },
   "devDependencies": {
